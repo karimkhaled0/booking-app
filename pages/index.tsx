@@ -1,5 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
+import { HomeIcon } from '@heroicons/react/24/solid'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import LeftHeader from '../components/LeftHeader'
+import TopHeader from '../components/TopHeader'
 
 const Home: NextPage = () => {
   return (
@@ -10,9 +14,27 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Header including The section at left*/}
 
-      {/* Search section */}
+      {/* Background Image */}
+      <div className='h-96 bg-[#288bc4d3] relative'>
+        <div className='w-full h-5'>
+          <img src='/sky4.png' alt="s" className='w-full h-[500px] object-cover' />
+        </div>
+        <div>
+          <img src="/plane.png" alt="plane" className='absolute right-20 bottom-20' />
+        </div>
+        {/* Top Header*/}
+        <TopHeader />
+        {/* Left Header */}
+        <LeftHeader
+          home={true}
+          wallet={false}
+          booking={false}
+          business={false}
+          explore={false}
+          support={false}
+        />
+      </div>
 
     </div>
   )
