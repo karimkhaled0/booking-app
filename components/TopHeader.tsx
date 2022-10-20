@@ -19,7 +19,7 @@ const TopHeader = (props: Props) => {
                         className="h-6 w-6 text-[#2E3758]"
                     />
                 </div>
-                <h1 className='text-xs md:text-lg font-semibold text-white'>Become a Partner</h1>
+                <h1 className='text-xs md:text-lg text-white'>Become a Partner</h1>
             </div>
             {/* Profile */}
             <div className='topHeaderClass w-44'>
@@ -30,7 +30,7 @@ const TopHeader = (props: Props) => {
                     width={30}
                     height={30}
                 />
-                <h1 className='text-xs md:text-lg font-semibold text-white'>Karim Khaled</h1>
+                <h1 className='text-xs md:text-lg text-white'>Karim Khaled</h1>
             </div>
 
         </div>
