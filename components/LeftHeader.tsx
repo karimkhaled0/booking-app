@@ -19,7 +19,7 @@ const LeftHeader = ({ home, wallet, booking, business, explore, support }: Props
     // false when it's small with icons only
     // The props is for highlight the page where the user in
     return (
-        <div className={open ? 'flex flex-col  justify-between h-[650px] w-[250px] bg-[#288bc4] absolute left-10 rounded-xl shadow-xl p-5' : 'flex flex-col items-center justify-between h-[650px] w-[80px] bg-[#288bc4] absolute left-10 rounded-xl shadow-xl p-5 relative'}>
+        <div className={open ? 'flex flex-col justify-between h-[650px] w-[250px] bg-[#288bc4] absolute left-10 rounded-xl shadow-xl p-5' : 'flex flex-col items-center justify-between h-[650px] w-[80px] bg-[#288bc4] absolute left-10 rounded-xl shadow-xl p-5'}>
 
             {
                 open ? null : (
