@@ -4,8 +4,8 @@
 
 @layer components {
     .topHeaderClass {
-      @apply flex space-x-3 items-center backdrop-blur-2xl bg-white/5 mx-5 text-center
-       p-1 rounded-3xl cursor-pointer transition duration-100 ease-out shadow-md hover:shadow-lg active:scale-90;
+      @apply flex space-x-3 items-center backdrop-blur-2xl bg-white/5 text-center
+      p-1 rounded-3xl cursor-pointer transition duration-100 ease-out shadow-md hover:shadow-lg active:scale-90;
     }
     .leftHeaderButton {
       @apply flex items-center space-x-3 w-52 p-3 rounded-full cursor-pointer 
