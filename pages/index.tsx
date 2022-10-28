@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-import { HomeIcon } from '@heroicons/react/24/solid'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
