@@ -7,7 +7,7 @@ import iconTaxi from '../public/IconTaxi.svg'
 
 
 import { LockClosedIcon } from '@heroicons/react/24/solid'
-import LoadingSpinner from './loadingSpinner'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 type Props = {
 }
@@ -129,3 +129,5 @@ const BookFlight = (props: Props) => {
 export default BookFlight
 
 /*  */
+
+// 5594 4445 5072 7904

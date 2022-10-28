@@ -1,4 +1,4 @@
-import { CalendarDaysIcon, MapPinIcon, TicketIcon, UserGroupIcon } from '@heroicons/react/24/solid'
+import { CalendarDaysIcon, GlobeEuropeAfricaIcon, MapPinIcon, PaperAirplaneIcon, TicketIcon, UserGroupIcon } from '@heroicons/react/24/solid'
 import React, { useEffect, useState } from 'react'
 
 import 'react-date-range/dist/styles.css'; // main style file
@@ -7,9 +7,22 @@ import { DateRange } from 'react-date-range';
 
 import { addDays } from 'date-fns';
 
-type Props = {}
+import { autoComplete } from '../fetching/getAutoComplete'
+import { useQuery } from "@tanstack/react-query";
+type Props = {
+
+}
 
 const RoundTrip = (props: Props) => {
+    const [from, setFrom] = useState('')
+    const [fromValue, setFromValue] = useState('')
+    // Fetching with query
+    const { isError, isSuccess, isLoading, data, error } = useQuery(
+        ["getAutoComplete", { query: from }],
+        autoComplete,
+        { staleTime: Infinity }
+    );
+    console.log(data)
     // Date selection
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(addDays(new Date(), 5))
@@ -37,7 +50,6 @@ const RoundTrip = (props: Props) => {
     return (
         <div>
             {/* from, to and class */}
-            {/* TODO: make search in from and to */}
             <div className='flex items-center justify-between mx-5 space-x-5'>
                 {/* From */}
                 <div className='flex flex-col space-y-2'>
@@ -49,10 +61,58 @@ const RoundTrip = (props: Props) => {
                         <h1 className='text-gray-400'>FROM</h1>
                     </div>
                     {/* From Search */}
-                    <div>
-                        <input type="text" className="block text-start p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
+                    <div className='relative'>
+                        <input
+                            onChange={(e) => {
+                                setFrom(e.target.value)
+                                setFromValue(e.target.value)
+                            }}
+                            type="text" value={fromValue} className="block text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
+                        {/* Airport Selection FROM */}
+                        <div className='absolute z-20 bg-white flex flex-col w-64 shadow-xl rounded-lg p-2 space-y-2 text-gray-500'>
+                            {
+                                data?.map((airport: any) => {
+                                    if (!airport.airportName) {
+                                        return (
+                                            <div key={airport.id} className='flex items-center space-x-2 justify-between'>
+                                                <GlobeEuropeAfricaIcon
+                                                    className='h-5 w-5 text-gray-500'
+                                                />
+                                                <button
+                                                    onClick={() => {
+                                                        setFromValue(`${airport.cityName}, ${airport.countryName} (${airport.cityCode})`)
+                                                        setFrom('')
+                                                    }}
+                                                    className='text-left p-1.5 hover:text-blue-700 w-full'
+                                                >{`${airport.cityName}, ${airport.countryName}`}</button>
+                                                <h1 className=''>{airport.cityCode}</h1>
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div key={airport.id} className='flex items-center space-x-2 justify-between'>
+
+                                                <PaperAirplaneIcon
+                                                    className='h-5 w-5 text-gray-500'
+                                                />
+                                                <button
+                                                    onClick={() => {
+                                                        setFromValue(`${airport.airportName}, ${airport.countryName} (${airport.airportCode})`)
+                                                        setFrom('')
+                                                    }}
+                                                    className='text-left p-1.5 hover:text-blue-700 w-full'
+                                                >{`${airport.airportName}, ${airport.countryName}`}</button>
+                                                <h1 className=''>{airport.airportCode}</h1>
+                                            </div>
+                                        )
+                                    }
+
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
+                {/* TODO: make search in to */}
                 {/* TO */}
                 <div className='flex flex-col space-y-2'>
                     {/* TO Icon */}
@@ -167,7 +227,7 @@ const RoundTrip = (props: Props) => {
                     <button className='uppercase bg-[#DF142D] px-6 py-5 rounded-xl text-white font-semibold clickButton mt-10'>Search flight</button>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
