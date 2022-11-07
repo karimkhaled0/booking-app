@@ -7,9 +7,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'fasthand': ['Fasthand', 'cursive'] ,
+        fasthand: ["Fasthand", "cursive"],
       },
     },
   },
-  plugins: [],
-}
+  plugins: [require("tailwind-scrollbar")],
+};

@@ -7,7 +7,7 @@ import { DateRange } from 'react-date-range';
 
 import { addDays } from 'date-fns';
 
-import { autoComplete } from '../fetching/getAutoComplete'
+import { autoCompleteFrom, autoCompleteTo } from '../fetching/getAutoComplete'
 import { useQuery } from "@tanstack/react-query";
 type Props = {
 
@@ -15,14 +15,30 @@ type Props = {
 
 const RoundTrip = (props: Props) => {
     const [from, setFrom] = useState('')
+    const [to, setTo] = useState('')
     const [fromValue, setFromValue] = useState('')
+    const [toValue, setToValue] = useState('')
     // Fetching with query
-    const { isError, isSuccess, isLoading, data, error } = useQuery(
-        ["getAutoComplete", { query: from }],
-        autoComplete,
-        { staleTime: Infinity }
-    );
-    console.log(data)
+    const useQueryMultiple = () => {
+        const res1 = useQuery(
+            ["getAutoComplete", { queryFrom: from }],
+            autoCompleteFrom,
+            { staleTime: Infinity }
+        );
+        const res2 = useQuery(
+            ["getAutoComplete", { queryTo: to }],
+            autoCompleteTo,
+            { staleTime: Infinity }
+        );
+        return [res1, res2];
+    }
+    const [
+        { isLoading: loading1, data: data1 },
+        { isLoading: loading2, data: data2 }
+    ] = useQueryMultiple()
+
+
+
     // Date selection
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(addDays(new Date(), 5))
@@ -67,11 +83,11 @@ const RoundTrip = (props: Props) => {
                                 setFrom(e.target.value)
                                 setFromValue(e.target.value)
                             }}
-                            type="text" value={fromValue} className="block text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
+                            type="text" value={fromValue} className="whitespace-nowrap inline-block text-ellipsis overflow-hidden text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
                         {/* Airport Selection FROM */}
-                        <div className='absolute z-20 bg-white flex flex-col w-64 shadow-xl rounded-lg p-2 space-y-2 text-gray-500'>
+                        <div className='absolute z-20 bg-white flex flex-col w-64 rounded-lg p-2 space-y-2 text-gray-500'>
                             {
-                                data?.map((airport: any) => {
+                                data1?.map((airport: any) => {
                                     if (!airport.airportName) {
                                         return (
                                             <div key={airport.id} className='flex items-center space-x-2 justify-between'>
@@ -112,7 +128,6 @@ const RoundTrip = (props: Props) => {
                         </div>
                     </div>
                 </div>
-                {/* TODO: make search in to */}
                 {/* TO */}
                 <div className='flex flex-col space-y-2'>
                     {/* TO Icon */}
@@ -123,8 +138,55 @@ const RoundTrip = (props: Props) => {
                         <h1 className='text-gray-400'>TO</h1>
                     </div>
                     {/* TO Search */}
-                    <div>
-                        <input type="text" className="block text-start p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
+                    <div className='relative'>
+                        <input
+                            onChange={(e) => {
+                                setTo(e.target.value)
+                                setToValue(e.target.value)
+                            }}
+                            type="text" value={toValue} className="whitespace-nowrap inline-block text-ellipsis overflow-hidden text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
+                        {/* Airport Selection FROM */}
+                        <div className='absolute z-20 bg-white flex flex-col w-64 rounded-lg p-2 space-y-2 text-gray-500'>
+                            {
+                                data2?.map((airport: any) => {
+                                    if (!airport.airportName) {
+                                        return (
+                                            <div key={airport.id} className='flex items-center space-x-2 justify-between'>
+                                                <GlobeEuropeAfricaIcon
+                                                    className='h-5 w-5 text-gray-500'
+                                                />
+                                                <button
+                                                    onClick={() => {
+                                                        setToValue(`${airport.cityName}, ${airport.countryName} (${airport.cityCode})`)
+                                                        setTo('')
+                                                    }}
+                                                    className='text-left p-1.5 hover:text-blue-700 w-full'
+                                                >{`${airport.cityName}, ${airport.countryName}`}</button>
+                                                <h1 className=''>{airport.cityCode}</h1>
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div key={airport.id} className='flex items-center space-x-2 justify-between'>
+
+                                                <PaperAirplaneIcon
+                                                    className='h-5 w-5 text-gray-500'
+                                                />
+                                                <button
+                                                    onClick={() => {
+                                                        setToValue(`${airport.airportName}, ${airport.countryName} (${airport.airportCode})`)
+                                                        setTo('')
+                                                    }}
+                                                    className='text-left p-1.5 hover:text-blue-700 w-full'
+                                                >{`${airport.airportName}, ${airport.countryName}`}</button>
+                                                <h1 className=''>{airport.airportCode}</h1>
+                                            </div>
+                                        )
+                                    }
+
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
                 {/* When */}
@@ -137,11 +199,11 @@ const RoundTrip = (props: Props) => {
                             />
                             <h1 className='text-gray-400'>Departure</h1>
                         </div>
-                        <div className='border border-gray-400 rounded-sm p-0.5 hover:bg-gray-200 clickButton' onClick={() => {
+                        <div className='border border-gray-400 rounded-sm p-0.5 hover:bg-gray-400 clickButton' onClick={() => {
                             setDateShow(!dateShow)
                         }}>
                             <button
-                                className='text-lg p-1 font-light'
+                                className='text-lg p-1 text-gray-800 hover:text-white font-light'
                             >{selectionRange.startDate.toDateString()}</button>
                         </div>
                     </div>
@@ -153,11 +215,11 @@ const RoundTrip = (props: Props) => {
                             />
                             <h1 className='text-gray-400'>Return</h1>
                         </div>
-                        <div className='border border-l-0 border-gray-400 rounded-sm p-0.5 hover:bg-gray-200 clickButton' onClick={() => {
+                        <div className='border border-l-0 border-gray-400 rounded-sm p-0.5 hover:bg-gray-400 clickButton' onClick={() => {
                             setDateShow(!dateShow)
                         }}>
                             <button
-                                className='text-lg p-1 font-light'
+                                className='text-lg p-1 text-gray-800 hover:text-white font-light'
                             >{selectionRange.endDate.toDateString()}</button>
                         </div>
                     </div>
