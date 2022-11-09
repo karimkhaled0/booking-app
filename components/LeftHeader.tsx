@@ -19,7 +19,7 @@ const LeftHeader = ({ home, wallet, booking, business, explore, support }: Props
     // false when it's small with icons only
     // The props is for highlight the page where the user in
     return (
-        <div className={open ? 'flex flex-col justify-between h-[650px] w-[250px] bg-[#288bc4] absolute left-10 rounded-xl shadow-xl p-5' : 'flex flex-col items-center justify-between h-[650px] w-[80px] bg-[#288bc4] absolute left-10 rounded-xl shadow-xl p-5'}>
+        <div className={open ? 'flex flex-col justify-between h-[650px] w-[250px] bg-[#288bc4] absolute left-10 rounded-xl shadow-xl p-5 z-30' : 'flex flex-col items-center justify-between h-[650px] w-[80px] bg-[#288bc4] absolute left-10 rounded-xl shadow-xl p-5 z-30'}>
 
             {
                 open ? null : (
@@ -105,7 +105,7 @@ const LeftHeader = ({ home, wallet, booking, business, explore, support }: Props
                     <div className='justify-around bg-white leftHeaderButton cursor-pointer'>
                         <img className='w-8 h-8' src="/logo.png" alt="s" />
                         <div>
-                            <h1>Get Premium</h1>
+                            <h1 className='text-black'>Get Premium</h1>
                             <p className='text-xs text-gray-500'>$39/m</p>
                         </div>
                         <ChevronRightIcon className='h-4 w-4 text-gray-500' />
