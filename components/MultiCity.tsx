@@ -2,7 +2,7 @@ import { TicketIcon, UserGroupIcon } from '@heroicons/react/24/solid'
 import React, { useState } from 'react'
 import MultiCityBox from '../components/MultiCityBox'
 
-
+// TODO: make click outside from to in all options of bookflight
 
 type Props = {}
 
@@ -20,11 +20,7 @@ const MultiCity = (props: Props) => {
     return (
         <div className='h-full'>
             {/* from, to and class */}
-            {/* TODO: make search in from and to */}
             <div className='space-y-3 relative'>
-
-                {/* TODO: make each date seperate */}
-                {/* make the datrRange out of map to avoid multiple dateRange */}
                 {
                     numberOfRows?.map((i) => (
                         <MultiCityBox key={i} index={i} />
