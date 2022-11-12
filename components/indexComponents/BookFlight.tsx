@@ -1,22 +1,22 @@
 import Image from 'next/image'
 import React, { Suspense, useState } from 'react'
-import iconPlane from '../public/IconPlane.svg'
-import iconHotel from '../public/IconHotel.svg'
-import iconVilla from '../public/IconVilla.svg'
-import iconTaxi from '../public/IconTaxi.svg'
+import iconPlane from '../../public/IconPlane.svg'
+import iconHotel from '../../public/IconHotel.svg'
+import iconVilla from '../../public/IconVilla.svg'
+import iconTaxi from '../../public/IconTaxi.svg'
 
 
 import { LockClosedIcon } from '@heroicons/react/24/solid'
-import LoadingSpinner from '../components/LoadingSpinner'
+import LoadingSpinner from './LoadingSpinner'
 
 type Props = {
 }
 
 const BookFlight = (props: Props) => {
     // Lazy & Suspense
-    const OneWay = React.lazy(() => import('../components/OneWay'))
-    const RoundTrip = React.lazy(() => import('../components/RoundTrip'))
-    const MultiCity = React.lazy(() => import('../components/MultiCity'))
+    const OneWay = React.lazy(() => import('./OneWay'))
+    const RoundTrip = React.lazy(() => import('./RoundTrip'))
+    const MultiCity = React.lazy(() => import('./MultiCity'))
 
     // flight selection
     const [oneWay, setOneWay] = useState(false)
@@ -75,7 +75,7 @@ const BookFlight = (props: Props) => {
                 </div>
             </div>
             {/* Booking Search */}
-            <div className='bg-white w-[1100px] rounded-xl shadow-lg p-10 flex flex-col space-y-5'>
+            <div className='bg-white w-[1100px] rounded-xl shadow-lg shadow-gray-400 p-10 flex flex-col space-y-5'>
                 {/* filters */}
                 <div className='flex items-center space-x-5'>
                     <button className={

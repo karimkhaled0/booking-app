@@ -1,5 +1,5 @@
 import { CalendarDaysIcon, GlobeEuropeAfricaIcon, MapPinIcon, PaperAirplaneIcon, TicketIcon, UserGroupIcon } from '@heroicons/react/24/solid'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -7,8 +7,9 @@ import { DateRange } from 'react-date-range';
 
 import { addDays } from 'date-fns';
 
-import { autoCompleteFrom, autoCompleteTo } from '../fetching/getAutoComplete'
+import { autoCompleteFrom, autoCompleteTo } from '../../fetching/getAutoComplete'
 import { useQuery } from "@tanstack/react-query";
+import { useOnClickOutside } from 'usehooks-ts';
 type Props = {
 
 }
@@ -63,6 +64,27 @@ const RoundTrip = (props: Props) => {
 
     // default value is string rather than number because of typescript
     const [person, setPerson] = useState('1')
+
+    // onclick outside hide From
+    const dropdownFrom = useRef(null)
+    const handleFromClickOutside = () => {
+        setFrom('')
+    }
+    useOnClickOutside(dropdownFrom, handleFromClickOutside)
+
+    // onclick outside hide To
+    const dropdownTo = useRef(null)
+    const handleToClickOutside = () => {
+        setTo('')
+    }
+    useOnClickOutside(dropdownTo, handleToClickOutside)
+
+    // onclick outside hide From
+    const dateRange = useRef(null)
+    const handleDateRangeClickOutside = () => {
+        setDateShow(false)
+    }
+    useOnClickOutside(dateRange, handleDateRangeClickOutside)
     return (
         <div>
             {/* from, to and class */}
@@ -83,9 +105,13 @@ const RoundTrip = (props: Props) => {
                                 setFrom(e.target.value)
                                 setFromValue(e.target.value)
                             }}
-                            type="text" value={fromValue} className="whitespace-nowrap inline-block text-ellipsis overflow-hidden text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
+                            type="text"
+                            onFocus={() => {
+                                setFrom(fromValue)
+                            }}
+                            value={fromValue} className="whitespace-nowrap inline-block text-ellipsis overflow-hidden text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
                         {/* Airport Selection FROM */}
-                        <div className='absolute z-20 bg-white flex flex-col w-64 rounded-lg p-2 space-y-2 text-gray-500'>
+                        <div ref={dropdownFrom} className='absolute z-20 bg-white flex flex-col w-64 rounded-lg p-2 space-y-2 text-gray-500'>
                             {
                                 data1?.map((airport: any) => {
                                     if (!airport.airportName) {
@@ -144,9 +170,12 @@ const RoundTrip = (props: Props) => {
                                 setTo(e.target.value)
                                 setToValue(e.target.value)
                             }}
+                            onFocus={() => {
+                                setTo(toValue)
+                            }}
                             type="text" value={toValue} className="whitespace-nowrap inline-block text-ellipsis overflow-hidden text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
                         {/* Airport Selection FROM */}
-                        <div className='absolute z-20 bg-white flex flex-col w-64 rounded-lg p-2 space-y-2 text-gray-500'>
+                        <div ref={dropdownTo} className='absolute z-20 bg-white flex flex-col w-64 rounded-lg p-2 space-y-2 text-gray-500'>
                             {
                                 data2?.map((airport: any) => {
                                     if (!airport.airportName) {
@@ -226,17 +255,19 @@ const RoundTrip = (props: Props) => {
                     {/* DateRange Picker */}
                     {
                         dateShow ? (
-                            <DateRange
-                                direction={'horizontal'}
-                                dateDisplayFormat={'yyyy-MM-dd'}
-                                months={2}
-                                showDateDisplay={false}
-                                className='rounded-lg absolute top-20 right-0 z-20 shadow-xl border-blue-300 border'
-                                ranges={[selectionRange]}
-                                minDate={new Date()}
-                                rangeColors={['#288bc4']}
-                                onChange={handleSelect}
-                            />
+                            <div ref={dateRange}>
+                                <DateRange
+                                    direction={'horizontal'}
+                                    dateDisplayFormat={'yyyy-MM-dd'}
+                                    months={2}
+                                    showDateDisplay={false}
+                                    className='rounded-lg absolute top-20 right-0 z-20 shadow-xl border-blue-300 border'
+                                    ranges={[selectionRange]}
+                                    minDate={new Date()}
+                                    rangeColors={['#288bc4']}
+                                    onChange={handleSelect}
+                                />
+                            </div>
                         ) : null
                     }
                 </div>

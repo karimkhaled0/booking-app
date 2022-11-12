@@ -1,21 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, Suspense, useRef, useEffect } from 'react'
-import Image from 'next/image'
-import profilePic from '../images/profileCircle.png'
 import { HomeIcon } from '@heroicons/react/24/solid'
-import { UserIcon } from '@heroicons/react/24/outline'
+import { ArrowLeftOnRectangleIcon, UserIcon } from '@heroicons/react/24/outline'
 import { useQuery } from "@tanstack/react-query";
-import { getUserData } from '../fetching/getUserData'
+import { getUserData } from '../../fetching/getUserData'
 import LoadingSpinner from './LoadingSpinner';
 import { Avatar } from 'react-profile-avatar'
 import 'react-profile-avatar/dist/index.css'
 import { useOnClickOutside } from 'usehooks-ts'
+import { useRouter } from 'next/router'
 
 type Props = {}
 
 const TopHeader = (props: Props) => {
+    // Router 
+    const router = useRouter()
+
     // Get user data
-    const { data } = useQuery(
+    const { data, refetch } = useQuery(
         ["signup"],
         getUserData,
         { staleTime: Infinity }
@@ -33,6 +35,17 @@ const TopHeader = (props: Props) => {
     }
     useOnClickOutside(dropdown, handleClickOutside)
 
+    // Logout Handler
+    const logoutHandler = () => {
+        localStorage.removeItem('token')
+        refetch()
+    }
+    // setting Handler
+    const settingHandler = () => {
+        router.push({
+            pathname: '/settings'
+        })
+    }
     return (
 
         <div className='flex justify-end w-full space-x-5 pr-20'>
@@ -47,12 +60,14 @@ const TopHeader = (props: Props) => {
             </div>
             {/* Profile */}
             {
+                // Sign up
                 data?.error ? (
                     <Suspense fallback={<LoadingSpinner />}>
                         <SignUp />
                     </Suspense>
 
                 ) : (
+                    // Profile
                     <div ref={dropdown} className='relative'>
                         <div className='topHeaderClass w-fit pr-5 ' onClick={() => {
                             setSetting(!setting)
@@ -72,14 +87,24 @@ const TopHeader = (props: Props) => {
                             <h1 className='text-xs md:text-base font-thin text-white/90'>{data?.data?.name}</h1>
                         </div>
                         {/* DropDown Modal */}
-                        <div className={setting ? 'absolute cursor-pointer top-full right-1/4 mt-2 z-50 bg-white flex flex-col whitespace-nowrap w-fit rounded-lg p-2 space-y-2 text-gray-500' : 'hidden'}>
-                            <div className='flex items-center space-x-2 justify-between relative'>
-                                <div className="absolute left-44 -top-3 h-0 w-0 border-x-4 border-x-transparent border-b-[8px] border-b-white"></div>
-                                <div className='flex  items-center space-x-5'>
+                        <div className={setting ? 'absolute cursor-pointer top-full right-1/4 mt-2 z-50 bg-white flex flex-col whitespace-nowrap w-fit rounded-md p-4 space-y-2 text-gray-500' : 'hidden'}>
+                            <div className='flex flex-col items-start relative w-52'>
+                                <div className="absolute left-44 -top-5 h-0 w-0 border-x-4 border-x-transparent border-b-[8px] border-b-white"></div>
+                                <div className='flex items-center space-x-5 mb-3' onClick={settingHandler}>
                                     <UserIcon
-                                        className='w-4 h-4 text-gray-800'
+                                        className='w-5 h-5 text-black'
                                     />
-                                    <h1>Manage Preferences</h1>
+                                    <h1 className='text-base text-gray-800 '>Manage Preferences</h1>
+
+                                </div>
+                                <div className='flex items-center space-x-5' onClick={logoutHandler}>
+                                    <ArrowLeftOnRectangleIcon
+                                        className='w-6 h-6 text-black'
+                                    />
+                                    <div>
+                                        <h1 className='text-base text-gray-800'>Log out</h1>
+                                        <h1 className='text-xs text-gray-400'>{data?.data?.name}</h1>
+                                    </div>
                                 </div>
                             </div>
                         </div>

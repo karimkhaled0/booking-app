@@ -1,11 +1,12 @@
 import { CalendarDaysIcon, GlobeEuropeAfricaIcon, MapPinIcon, PaperAirplaneIcon, TicketIcon, UserGroupIcon } from '@heroicons/react/24/solid'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { Calendar } from 'react-date-range';
-import { autoCompleteFrom, autoCompleteTo } from '../fetching/getAutoComplete'
+import { autoCompleteFrom, autoCompleteTo } from '../../fetching/getAutoComplete'
 import { useQuery } from "@tanstack/react-query";
+import { useOnClickOutside } from 'usehooks-ts';
 type Props = {
     index: number,
 }
@@ -47,8 +48,29 @@ const MultiCityBox = ({ index }: Props) => {
             setDateShow(false)
         }
     }, [startDate])
+
+    // onclick outside hide From
+    const dropdownFrom = useRef(null)
+    const handleFromClickOutside = () => {
+        setFrom('')
+    }
+    useOnClickOutside(dropdownFrom, handleFromClickOutside)
+
+    // onclick outside hide To
+    const dropdownTo = useRef(null)
+    const handleToClickOutside = () => {
+        setTo('')
+    }
+    useOnClickOutside(dropdownTo, handleToClickOutside)
+
+    // onclick outside hide From
+    const dateRange = useRef(null)
+    const handleDateRangeClickOutside = () => {
+        setDateShow(false)
+    }
+    useOnClickOutside(dateRange, handleDateRangeClickOutside)
     return (
-        <div className='flex items-center justify-between mx-5 space-x-5'>
+        <div className='flex items-center justify-between mx-5 space-x-5 relative'>
             <div className='relative'>
                 <h1 className='absolute text-lg font-semibold text-gray-500 right-0 rounded-full w-[30px] h-[30px] border border-gray-400 text-center z-20'>{index}</h1>
             </div>
@@ -68,9 +90,12 @@ const MultiCityBox = ({ index }: Props) => {
                             setFrom(e.target.value)
                             setFromValue(e.target.value)
                         }}
+                        onFocus={() => {
+                            setFrom(fromValue)
+                        }}
                         type="text" value={fromValue} className="whitespace-nowrap inline-block text-ellipsis overflow-hidden text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
                     {/* Airport Selection FROM */}
-                    <div className={from ? 'absolute z-40 bg-white shadow-xl flex flex-col w-64 rounded-lg border-2 p-2 space-y-2 text-gray-500' : 'hidden'}>
+                    <div ref={dropdownFrom} className={from ? 'absolute z-40 bg-white shadow-xl flex flex-col w-64 rounded-lg border-2 p-2 space-y-2 text-gray-500' : 'hidden'}>
                         {
                             data1?.map((airport: any) => {
                                 if (!airport.airportName) {
@@ -129,9 +154,12 @@ const MultiCityBox = ({ index }: Props) => {
                             setTo(e.target.value)
                             setToValue(e.target.value)
                         }}
+                        onFocus={() => {
+                            setTo(toValue)
+                        }}
                         type="text" value={toValue} className="whitespace-nowrap inline-block text-ellipsis overflow-hidden text-start font-semibold p-2 w-64 text-gray-900 bg-gray-50 rounded-sm border border-gray-400 sm:text-md focus:ring-blue-500 focus:border-blue-500 " />
                     {/* Airport Selection TO */}
-                    <div className={to ? 'absolute z-40 bg-white shadow-xl flex flex-col w-64 rounded-lg border-2 p-2 space-y-2 text-gray-500' : 'hidden'}>
+                    <div ref={dropdownTo} className={to ? 'absolute z-40 bg-white shadow-xl flex flex-col w-64 rounded-lg border-2 p-2 space-y-2 text-gray-500' : 'hidden'}>
                         {
                             data2?.map((airport: any) => {
                                 if (!airport.airportName) {
@@ -192,15 +220,17 @@ const MultiCityBox = ({ index }: Props) => {
             </div>
             {
                 dateShow ? (
-                    <Calendar
-                        date={startDate}
-                        direction={'horizontal'}
-                        dateDisplayFormat={'yyyy-MM-dd'}
-                        className='rounded-lg absolute top-0 right-0 z-20 shadow-xl border-blue-300 border'
-                        minDate={new Date()}
-                        color={'#288bc4'}
-                        onChange={handleSelect}
-                    />
+                    <div ref={dateRange}>
+                        <Calendar
+                            date={startDate}
+                            direction={'horizontal'}
+                            dateDisplayFormat={'yyyy-MM-dd'}
+                            className='rounded-lg absolute top-20 right-0 z-20 shadow-xl border-blue-300 border'
+                            minDate={new Date()}
+                            color={'#288bc4'}
+                            onChange={handleSelect}
+                        />
+                    </div>
                 ) : null
             }
         </div>

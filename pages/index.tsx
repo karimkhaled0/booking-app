@@ -1,18 +1,21 @@
+import React, { Suspense } from 'react';
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import BookFlight from '../components/BookFlight'
-import LeftHeader from '../components/LeftHeader'
-import TopHeader from '../components/TopHeader'
+import LeftHeader from '../components/indexComponents/LeftHeader'
+import TopHeader from '../components/indexComponents/TopHeader'
 import skyImage from '../public/sky4.png'
 import planeImage from '../public/plane.png'
-import SpecialOffers from '../components/SpecialOffers'
-import BestOffer from '../components/BestOffer'
-import Banner from '../components/Banner'
+import LoadingSpinner from '../components/indexComponents/LoadingSpinner';
+import BookFlight from '../components/indexComponents/BookFlight';
 
 const Home: NextPage = () => {
+  const SpecialOffers = React.lazy(() => import('../components/indexComponents/SpecialOffers'));
+  const BestOffer = React.lazy(() => import('../components/indexComponents/BestOffer'));
+  const Banner = React.lazy(() => import('../components/indexComponents/Banner'));
+
   return (
-    <div className='bg-[#EBF0F3] text-white h-screen w-screen overflow-y-scroll
+    <div className='bg-white text-white h-screen w-screen overflow-y-scroll
     z-0 overflow-x-hidden scrollbar-thin  scrollbar-track-gray-400/20 scrollbar-thumb-[#288bc4]/80 relative'>
       <Head>
         <title>KarimBook</title>
@@ -66,15 +69,19 @@ const Home: NextPage = () => {
       {/* Middle Section */}
       <section className='h-screen w-full absolute top-16 left-0 z-20 space-y-20'>
         <BookFlight />
-        <SpecialOffers />
-        <BestOffer />
-        <Banner />
+        <Suspense fallback={<LoadingSpinner />}>
+          <SpecialOffers />
+        </Suspense>
+        <Suspense fallback={<LoadingSpinner />}>
+          <BestOffer />
+        </Suspense>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Banner />
+        </Suspense>
         {/* To make a space in the last section */}
         <div className='h-[1px]'>
         </div>
       </section>
-
-
     </div>
   )
 }

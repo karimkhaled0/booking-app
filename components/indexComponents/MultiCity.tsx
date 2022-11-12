@@ -1,8 +1,7 @@
 import { TicketIcon, UserGroupIcon } from '@heroicons/react/24/solid'
 import React, { useState } from 'react'
-import MultiCityBox from '../components/MultiCityBox'
+import MultiCityBox from './MultiCityBox'
 
-// TODO: make click outside from to in all options of bookflight
 
 type Props = {}
 

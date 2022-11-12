@@ -1,13 +1,13 @@
 import { ChevronRightIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
 import React from 'react'
-import bestOffer1 from '../public/bestOffer1.png'
+import bestOffer1 from '../../public/bestOffer1.png'
 
 type Props = {}
 
 const BestOffer = (props: Props) => {
     return (
-        <div className='flex flex-col ml-[360px] mx-auto max-w-5xl p-8 max-h-full bg-white rounded-2xl space-y-10'>
+        <div className='flex flex-col ml-[360px] mx-auto max-w-5xl p-8 max-h-full bg-white rounded-2xl space-y-10 shadow-lg shadow-gray-400'>
             <div className='flex items-center justify-between'>
                 <h1 className='text-2xl text-gray-800'>Best Offer</h1>
                 <h1 className='text-lg text-blue-500 cursor-pointer hover:underline hover:decoration-stone-900'>View all</h1>

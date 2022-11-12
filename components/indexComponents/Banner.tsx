@@ -1,12 +1,12 @@
 import Image from 'next/image'
 import React from 'react'
-import bannerPlane from '../public/bannerPlane.png'
+import bannerPlane from '../../public/bannerPlane.png'
 
 type Props = {}
 
 const Banner = (props: Props) => {
     return (
-        <div className='flex justify-between ml-[360px] mx-auto max-w-5xl px-10 pt-3 max-h-full bg-[#FFC54D] rounded-2xl items-center'>
+        <div className='flex justify-between ml-[360px] mx-auto max-w-5xl px-10 pt-3 max-h-full bg-[#FFC54D] rounded-2xl items-center shadow-lg shadow-orange-400'>
             <div className='flex flex-col space-y-5'>
                 <h1 className='text-3xl capitalize font-semibold'>book your perfect deals</h1>
                 <div className='flex items-center space-x-3'>

@@ -1,12 +1,12 @@
 import Image from 'next/image'
 import React from 'react'
-import cityImage from '../public/cityImage.png'
+import cityImage from '../../public/cityImage.png'
 
 type Props = {}
 
 const SmallCard = (props: Props) => {
     return (
-        <div className='flex w-[462px] bg-white p-5 mt-5 rounded-xl space-x-7 shadow-lg'>
+        <div className='flex w-[462px] bg-white p-5 mt-5 rounded-xl space-x-7 shadow-lg shadow-gray-300 mb-5'>
             {/* Image */}
             <div className='w-[180px] h-[140px] relative'>
                 <Image

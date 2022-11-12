@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
+import { useOnClickOutside } from 'usehooks-ts'
 
 type Props = {}
 
 const SignUpComponent = (props: Props) => {
-    const [name, setName] = useState('')
-    const [nameError, setNameError] = useState('')
     const [email, setEmail] = useState('')
     const [emailError, setEmailError] = useState('')
     const [password, setPassword] = useState('')
@@ -22,7 +21,7 @@ const SignUpComponent = (props: Props) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                name: name,
+                name: email.substring(0, email.indexOf('@')),
                 email: email,
                 password: password,
                 password2: password2
@@ -33,11 +32,9 @@ const SignUpComponent = (props: Props) => {
         const error = res.errors
         console.log(error)
         if (!error) {
-            window.location.reload();
+            setModal(true)
+            setModal2(false)
         } else {
-            if (error.name) {
-                setNameError(error.name)
-            }
             if (error.email) {
                 setEmailError(error.email)
             }
@@ -80,6 +77,21 @@ const SignUpComponent = (props: Props) => {
         }
 
     }
+
+    // onclick outside hide siginin
+    const modalOutside = useRef(null)
+    const handleModalClickOutside = () => {
+        setModal(false)
+    }
+    useOnClickOutside(modalOutside, handleModalClickOutside)
+
+    // onclick outside hide siginup
+    const modal2Outside = useRef(null)
+    const handleModal2ClickOutside = () => {
+        setModal2(false)
+    }
+    useOnClickOutside(modal2Outside, handleModal2ClickOutside)
+
     return (
         <div className='relative'>
             <div className='topHeaderClass w-fit'>
@@ -90,7 +102,7 @@ const SignUpComponent = (props: Props) => {
                     className='py-1 w-16 rounded-full text-whitefont-semibold clickButton'>Login</button>
             </div>
             {/* Login Modal */}
-            <div id="authentication-modal" data-modal-placement="center" tabIndex={1} aria-hidden="true"
+            <div ref={modalOutside} id="authentication-modal" data-modal-placement="center" tabIndex={1} aria-hidden="true"
                 className={modal ? "overflow-y-auto overflow-x-hidden fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50 w-[400px] h-fit justify-center items-center" : "hidden"}>
                 <div className="relative p-4 w-full max-w-md h-full md:h-auto">
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -149,7 +161,7 @@ const SignUpComponent = (props: Props) => {
             </div>
 
             {/* Signup Modal */}
-            <div id="authentication-modal2" data-modal-placement="center" tabIndex={1} aria-hidden="true"
+            <div ref={modal2Outside} id="authentication-modal2" data-modal-placement="center" tabIndex={1} aria-hidden="true"
                 className={modal2 ? "overflow-y-auto overflow-x-hidden fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50 w-[400px] h-fit justify-center items-center" : "hidden"}>
                 <div className="relative p-4 w-full max-w-md h-full md:h-auto">
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -162,16 +174,6 @@ const SignUpComponent = (props: Props) => {
                         <div className="py-6 px-6 lg:px-8">
                             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
                             <form className="space-y-6" method='POST' onSubmit={handleSignUp}>
-                                <div>
-                                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
-                                    <input
-                                        onChange={(e) => {
-                                            setName(e.target.value)
-                                            setNameError('')
-                                        }}
-                                        type="text" value={name} name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="karim" required />
-                                    <h1 className='text-sm text-red-500 ml-2'>{nameError}</h1>
-                                </div>
                                 <div>
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Email</label>
                                     <input
