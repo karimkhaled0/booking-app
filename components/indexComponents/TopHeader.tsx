@@ -10,6 +10,7 @@ import 'react-profile-avatar/dist/index.css'
 import { useOnClickOutside } from 'usehooks-ts'
 import { useRouter } from 'next/router'
 import Image from 'next/image';
+import profileBlank from '../../public/profileBlank.png'
 
 type Props = {}
 
@@ -83,7 +84,7 @@ const TopHeader = (props: Props) => {
                                 data?.data?.photo ? (
                                     <Image
                                         className='rounded-full'
-                                        src={photo}
+                                        src={photo ? photo : profileBlank}
                                         alt='Profile-pic'
                                         width={25}
                                         height={25}
