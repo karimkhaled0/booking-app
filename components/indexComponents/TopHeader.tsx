@@ -9,10 +9,13 @@ import { Avatar } from 'react-profile-avatar'
 import 'react-profile-avatar/dist/index.css'
 import { useOnClickOutside } from 'usehooks-ts'
 import { useRouter } from 'next/router'
+import Image from 'next/image';
 
 type Props = {}
 
 const TopHeader = (props: Props) => {
+    // set the image from database
+    const [photo, setPhoto] = useState(String)
     // Router 
     const router = useRouter()
 
@@ -46,6 +49,10 @@ const TopHeader = (props: Props) => {
             pathname: '/settings'
         })
     }
+
+    useEffect(() => {
+        setPhoto(`data:image/png;base64,${data?.data?.photo.data}`)
+    }, [data?.data?.photo.data, refetch])
     return (
 
         <div className='flex justify-end w-full space-x-5 pr-20'>
@@ -72,19 +79,25 @@ const TopHeader = (props: Props) => {
                         <div className='topHeaderClass w-fit pr-5 ' onClick={() => {
                             setSetting(!setting)
                         }} >
-                            <Avatar
-                                name={data?.data?.name}
-                                colour={'#288bc4'}
-                                size={25}
-                            />
-                            {/* <Image
-                            className='rounded-full'
-                            src={profilePic}
-                            alt='Profile-pic'
-                            width={20}
-                            height={20}
-                        /> */}
-                            <h1 className='text-xs md:text-base font-thin text-white/90'>{data?.data?.name}</h1>
+                            {
+                                data?.data?.photo ? (
+                                    <Image
+                                        className='rounded-full'
+                                        src={photo}
+                                        alt='Profile-pic'
+                                        width={25}
+                                        height={25}
+                                    />
+                                ) : (
+                                    <Avatar
+                                        name={data?.data?.name}
+                                        colour={'#288bc4'}
+                                        size={25}
+                                    />
+                                )
+                            }
+
+                            <h1 className='text-xs md:text-base text-white/90'>{data?.data?.name}</h1>
                         </div>
                         {/* DropDown Modal */}
                         <div className={setting ? 'absolute cursor-pointer top-full right-1/4 mt-2 z-50 bg-white flex flex-col whitespace-nowrap w-fit rounded-md p-4 space-y-2 text-gray-500' : 'hidden'}>
