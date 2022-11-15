@@ -99,7 +99,7 @@ const SignUpComponent = (props: Props) => {
                     onClick={() => {
                         setModal(!modal)
                     }}
-                    className='py-1 w-16 rounded-full text-whitefont-semibold clickButton'>Login</button>
+                    className='w-16 rounded-full text-whitefont-semibold clickButton'>Login</button>
             </div>
             {/* Login Modal */}
             <div ref={modalOutside} id="authentication-modal" data-modal-placement="center" tabIndex={1} aria-hidden="true"

@@ -62,6 +62,7 @@ const Home: NextPage = () => {
           business={false}
           explore={false}
           support={false}
+          headerOpen={true}
         />
 
       </div >

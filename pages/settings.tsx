@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Head from 'next/head'
 import Image from 'next/image'
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import TopHeader from '../components/indexComponents/TopHeader'
 import skyImage from '../public/sky4.png'
 import planeImage from '../public/plane.png'
@@ -9,9 +9,16 @@ import { AdjustmentsHorizontalIcon, BellAlertIcon, CreditCardIcon, LockClosedIco
 import LeftHeader from '../components/indexComponents/LeftHeader'
 import { useRouter } from 'next/router'
 import LoadingSpinner from '../components/indexComponents/LoadingSpinner'
+import { useQuery } from "@tanstack/react-query";
+import { getUserData } from '../fetching/getUserData'
 type Props = {}
 
 const settings = (props: Props) => {
+    const { isError } = useQuery(
+        ["signup"],
+        getUserData,
+        { staleTime: Infinity }
+    );
     const router = useRouter()
     const PersonalDetails = React.lazy(() => import('../components/settingsComponents/PersonalDetails'));
     const Preferences = React.lazy(() => import('../components/settingsComponents/Preferences'));
@@ -27,6 +34,13 @@ const settings = (props: Props) => {
     const [notification, setNotification] = useState(false)
     const [travellers, setTravellers] = useState(false)
 
+    useEffect(() => {
+        if (isError) {
+            router.push({
+                pathname: '/'
+            })
+        }
+    }, [isError, router])
     return (
         // TODO: make the edit buttons functions
         // TODO: make language and currancies select
@@ -50,6 +64,8 @@ const settings = (props: Props) => {
                             alt='Sky'
                             layout='fill'
                             objectFit='cover'
+                            priority={true}
+
                         />
                     </div>
                 </div>
@@ -65,142 +81,145 @@ const settings = (props: Props) => {
                 {/* Top Header*/}
                 <TopHeader />
             </div >
-            {/* Settings */}
-            <div className='max-w-6xl mx-auto grid grid-cols-4 my-4'>
-                {/* Left side */}
-                <div className='h-fit border border-gray-300 rounded-lg'>
-                    {/* Personal details */}
-                    <div className={personal ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
-                        setPersonal(true)
-                        setPreferences(false)
-                        setSecurity(false)
-                        setPayment(false)
-                        setNotification(false)
-                        setTravellers(false)
-                    }}>
-                        <UserPlusIcon
-                            className={personal ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
-                        />
-                        <h1 className={personal ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Personal details</h1>
+            {
+                isError ? null : (
+                    <div className='max-w-6xl mx-auto grid grid-cols-4 my-4'>
+                        {/* Left side */}
+                        <div className='h-fit border border-gray-300 rounded-lg'>
+                            {/* Personal details */}
+                            <div className={personal ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
+                                setPersonal(true)
+                                setPreferences(false)
+                                setSecurity(false)
+                                setPayment(false)
+                                setNotification(false)
+                                setTravellers(false)
+                            }}>
+                                <UserPlusIcon
+                                    className={personal ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
+                                />
+                                <h1 className={personal ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Personal details</h1>
+                            </div>
+                            {/* Prefernces */}
+                            <div className={preferences ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
+                                setPersonal(false)
+                                setPreferences(true)
+                                setSecurity(false)
+                                setPayment(false)
+                                setNotification(false)
+                                setTravellers(false)
+                            }}>
+                                <AdjustmentsHorizontalIcon
+                                    className={preferences ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
+                                />
+                                <h1 className={preferences ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Prefernces</h1>
+                            </div>
+                            {/* Security */}
+                            <div className={security ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
+                                setPersonal(false)
+                                setPreferences(false)
+                                setSecurity(true)
+                                setPayment(false)
+                                setNotification(false)
+                                setTravellers(false)
+                            }}>
+                                <LockClosedIcon
+                                    className={security ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
+                                />
+                                <h1 className={security ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Security</h1>
+                            </div>
+                            {/* Payment details */}
+                            <div className={payment ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
+                                setPersonal(false)
+                                setPreferences(false)
+                                setSecurity(false)
+                                setPayment(true)
+                                setNotification(false)
+                                setTravellers(false)
+                            }}>
+                                <CreditCardIcon
+                                    className={payment ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
+                                />
+                                <h1 className={payment ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Payment details</h1>
+                            </div>
+                            {/* Email notification */}
+                            <div className={notification ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
+                                setPersonal(false)
+                                setPreferences(false)
+                                setSecurity(false)
+                                setPayment(false)
+                                setNotification(true)
+                                setTravellers(false)
+                            }}>
+                                <BellAlertIcon
+                                    className={notification ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
+                                />
+                                <h1 className={notification ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Email notification</h1>
+                            </div>
+                            {/* Other travellers */}
+                            <div className={travellers ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
+                                setPersonal(false)
+                                setPreferences(false)
+                                setSecurity(false)
+                                setPayment(false)
+                                setNotification(false)
+                                setTravellers(true)
+                            }}>
+                                <UsersIcon
+                                    className={travellers ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
+                                />
+                                <h1 className={travellers ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Other travellers</h1>
+                            </div>
+                        </div>
+                        {/* Right side */}
+                        <div className='col-span-3'>
+                            {
+                                personal && (
+                                    <Suspense fallback={<LoadingSpinner />}>
+                                        <PersonalDetails />
+                                    </Suspense>
+                                )
+                            }
+                            {
+                                preferences && (
+                                    <Suspense fallback={<LoadingSpinner />}>
+                                        <Preferences />
+                                    </Suspense>
+                                )
+                            }
+                            {
+                                security && (
+                                    <Suspense fallback={<LoadingSpinner />}>
+                                        <Security />
+                                    </Suspense>
+                                )
+                            }
+                            {
+                                payment && (
+                                    <Suspense fallback={<LoadingSpinner />}>
+                                        <Payment />
+                                    </Suspense>
+                                )
+                            }
+                            {
+                                notification && (
+                                    <Suspense fallback={<LoadingSpinner />}>
+                                        <Notification />
+                                    </Suspense>
+                                )
+                            }
+                            {
+                                travellers && (
+                                    <Suspense fallback={<LoadingSpinner />}>
+                                        <Travellers />
+                                    </Suspense>
+                                )
+                            }
+                        </div>
                     </div>
-                    {/* Prefernces */}
-                    <div className={preferences ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
-                        setPersonal(false)
-                        setPreferences(true)
-                        setSecurity(false)
-                        setPayment(false)
-                        setNotification(false)
-                        setTravellers(false)
-                    }}>
-                        <AdjustmentsHorizontalIcon
-                            className={preferences ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
-                        />
-                        <h1 className={preferences ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Prefernces</h1>
-                    </div>
-                    {/* Security */}
-                    <div className={security ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
-                        setPersonal(false)
-                        setPreferences(false)
-                        setSecurity(true)
-                        setPayment(false)
-                        setNotification(false)
-                        setTravellers(false)
-                    }}>
-                        <LockClosedIcon
-                            className={security ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
-                        />
-                        <h1 className={security ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Security</h1>
-                    </div>
-                    {/* Payment details */}
-                    <div className={payment ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
-                        setPersonal(false)
-                        setPreferences(false)
-                        setSecurity(false)
-                        setPayment(true)
-                        setNotification(false)
-                        setTravellers(false)
-                    }}>
-                        <CreditCardIcon
-                            className={payment ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
-                        />
-                        <h1 className={payment ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Payment details</h1>
-                    </div>
-                    {/* Email notification */}
-                    <div className={notification ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
-                        setPersonal(false)
-                        setPreferences(false)
-                        setSecurity(false)
-                        setPayment(false)
-                        setNotification(true)
-                        setTravellers(false)
-                    }}>
-                        <BellAlertIcon
-                            className={notification ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
-                        />
-                        <h1 className={notification ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Email notification</h1>
-                    </div>
-                    {/* Other travellers */}
-                    <div className={travellers ? 'p-5 border-b border-l-4 border-l-blue-500 border-b-gray-300 flex items-center space-x-5 group cursor-pointer' : 'p-5 border-b border-gray-300 flex items-center space-x-5 group cursor-pointer'} onClick={() => {
-                        setPersonal(false)
-                        setPreferences(false)
-                        setSecurity(false)
-                        setPayment(false)
-                        setNotification(false)
-                        setTravellers(true)
-                    }}>
-                        <UsersIcon
-                            className={travellers ? 'h-9 w-9 text-blue-500 border border-gray-100 p-2 bg-gray-200 rounded-full' : 'h-9 w-9 group-hover:text-blue-500 text-gray-800 border border-gray-100 p-2 bg-gray-200 rounded-full'}
-                        />
-                        <h1 className={travellers ? 'text-base text-blue-500 group-hover:underline' : 'text-base group-hover:text-blue-500 text-gray-800 group-hover:underline'}>Other travellers</h1>
-                    </div>
-                </div>
-                {/* Right side */}
-                <div className='col-span-3'>
-                    {
-                        personal && (
-                            <Suspense fallback={<LoadingSpinner />}>
-                                <PersonalDetails />
-                            </Suspense>
-                        )
-                    }
-                    {
-                        preferences && (
-                            <Suspense fallback={<LoadingSpinner />}>
-                                <Preferences />
-                            </Suspense>
-                        )
-                    }
-                    {
-                        security && (
-                            <Suspense fallback={<LoadingSpinner />}>
-                                <Security />
-                            </Suspense>
-                        )
-                    }
-                    {
-                        payment && (
-                            <Suspense fallback={<LoadingSpinner />}>
-                                <Payment />
-                            </Suspense>
-                        )
-                    }
-                    {
-                        notification && (
-                            <Suspense fallback={<LoadingSpinner />}>
-                                <Notification />
-                            </Suspense>
-                        )
-                    }
-                    {
-                        travellers && (
-                            <Suspense fallback={<LoadingSpinner />}>
-                                <Travellers />
-                            </Suspense>
-                        )
-                    }
-                </div>
-            </div>
-        </div>
+                )
+            }
+        </div >
     )
 }
 

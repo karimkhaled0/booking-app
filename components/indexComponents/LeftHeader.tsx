@@ -8,11 +8,12 @@ type Props = {
     booking: boolean,
     business: boolean,
     explore: boolean,
-    support: boolean
+    support: boolean,
+    headerOpen: boolean
 }
 
-const LeftHeader = ({ home, wallet, booking, business, explore, support }: Props) => {
-    const [open, setOpen] = useState(true)
+const LeftHeader = ({ home, wallet, booking, business, explore, support, headerOpen = true }: Props) => {
+    const [open, setOpen] = useState(headerOpen)
 
     // open is for optimize the left header with icons only or bigger with all details
     // the open variable is true when the left header is bigger
@@ -88,12 +89,12 @@ const LeftHeader = ({ home, wallet, booking, business, explore, support }: Props
                     </div>
                 ) : (
                     <div className='flex flex-col space-y-7 items-center justify-center'>
-                        <HomeIcon className='h-6 w-6 text-white clickButton' />
-                        <WalletIcon className='h-6 w-6 text-white clickButton' />
-                        <UserPlusIcon className='h-6 w-6 text-white clickButton' />
-                        <BriefcaseIcon className='h-6 w-6 text-white clickButton' />
-                        <GlobeEuropeAfricaIcon className='h-6 w-6 text-white clickButton' />
-                        <QuestionMarkCircleIcon className='h-6 w-6 text-white clickButton' />
+                        <HomeIcon className={home ? 'h-6 w-6 text-red-200 clickButton' : 'h-6 w-6 text-white clickButton'} />
+                        <WalletIcon className={wallet ? 'h-6 w-6 text-red-200 clickButton' : 'h-6 w-6 text-white clickButton'} />
+                        <UserPlusIcon className={booking ? 'h-6 w-6 text-red-200 clickButton' : 'h-6 w-6 text-white clickButton'} />
+                        <BriefcaseIcon className={business ? 'h-6 w-6 text-red-200 clickButton' : 'h-6 w-6 text-white clickButton'} />
+                        <GlobeEuropeAfricaIcon className={explore ? 'h-6 w-6 text-red-200 clickButton' : 'h-6 w-6 text-white clickButton'} />
+                        <QuestionMarkCircleIcon className={support ? 'h-6 w-6 text-red-200 clickButton' : 'h-6 w-6 text-white clickButton'} />
                     </div>
                 )
             }

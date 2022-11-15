@@ -2,7 +2,7 @@
 import React, { useState, Suspense, useRef, useEffect } from 'react'
 import { HomeIcon } from '@heroicons/react/24/solid'
 import { ArrowLeftOnRectangleIcon, UserIcon } from '@heroicons/react/24/outline'
-import { useQuery } from "@tanstack/react-query";
+import { isError, useQuery } from "@tanstack/react-query";
 import { getUserData } from '../../fetching/getUserData'
 import LoadingSpinner from './LoadingSpinner';
 import { Avatar } from 'react-profile-avatar'
@@ -21,7 +21,7 @@ const TopHeader = (props: Props) => {
     const router = useRouter()
 
     // Get user data
-    const { data, refetch } = useQuery(
+    const { data, refetch, isError } = useQuery(
         ["signup"],
         getUserData,
         { staleTime: Infinity }
@@ -52,10 +52,9 @@ const TopHeader = (props: Props) => {
     }
 
     useEffect(() => {
-        setPhoto(`data:image/png;base64,${data?.data?.photo.data}`)
-    }, [data?.data?.photo.data, refetch])
+        setPhoto(`data:image/png;base64,${data?.data?.photo?.data}`)
+    }, [data?.data?.photo?.data, refetch])
     return (
-
         <div className='flex justify-end w-full space-x-5 pr-20'>
             {/* Become a partner */}
             <div className='topHeaderClass w-44'>
@@ -69,7 +68,7 @@ const TopHeader = (props: Props) => {
             {/* Profile */}
             {
                 // Sign up
-                data?.error ? (
+                isError ? (
                     <Suspense fallback={<LoadingSpinner />}>
                         <SignUp />
                     </Suspense>
@@ -101,17 +100,17 @@ const TopHeader = (props: Props) => {
                             <h1 className='text-xs md:text-base text-white/90'>{data?.data?.name}</h1>
                         </div>
                         {/* DropDown Modal */}
-                        <div className={setting ? 'absolute cursor-pointer top-full right-1/4 mt-2 z-50 bg-white flex flex-col whitespace-nowrap w-fit rounded-md p-4 space-y-2 text-gray-500' : 'hidden'}>
-                            <div className='flex flex-col items-start relative w-52'>
-                                <div className="absolute left-44 -top-5 h-0 w-0 border-x-4 border-x-transparent border-b-[8px] border-b-white"></div>
-                                <div className='flex items-center space-x-5 mb-3' onClick={settingHandler}>
+                        <div className={setting ? 'absolute cursor-pointer top-full right-1/4 mt-2 z-50 bg-white flex flex-col whitespace-nowrap w-fit rounded-md space-y-2 text-gray-500' : 'hidden'}>
+                            <div className='flex flex-col items-start relative w-52 '>
+                                <div className="absolute left-44 -top-1.5 h-0 w-0 border-x-4 border-x-transparent border-b-[8px] border-b-white"></div>
+                                <div className='flex items-center space-x-5 w-full p-2.5 hover:bg-gray-200 rounded-md' onClick={settingHandler}>
                                     <UserIcon
                                         className='w-5 h-5 text-black'
                                     />
-                                    <h1 className='text-base text-gray-800 '>Manage Preferences</h1>
+                                    <h1 className='text-base text-gray-800'>Manage Preferences</h1>
 
                                 </div>
-                                <div className='flex items-center space-x-5' onClick={logoutHandler}>
+                                <div className='flex items-center space-x-5 w-full p-2.5 hover:bg-gray-200 rounded-md' onClick={logoutHandler}>
                                     <ArrowLeftOnRectangleIcon
                                         className='w-6 h-6 text-black'
                                     />

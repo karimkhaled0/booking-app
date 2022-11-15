@@ -1,3 +1,6 @@
+import axios from "axios";
+
+
 type Params = {
     queryKey: [string, { queryFrom: string }],
 };
@@ -7,20 +10,23 @@ type Params2 = {
 // Auto complete From
 export const autoCompleteFrom = async (params: Params) => {
     const [, { queryFrom }] = params.queryKey
-    const res = await fetch(`https://srv.wego.com/places/search?language=en&query=${queryFrom}&min_airports=1`, {
+    const options = {
         method: 'GET',
-    })
-        .then(response => response.json())
-        .catch(err => console.error(err))
-    return res
+        url: 'https://srv.wego.com/places/search',
+        params: { language: 'en', query: queryFrom, min_airports: '1' }
+    };
+    const res = await axios.request(options)
+    return res.data
+
 }
 // Auto Complete To
 export const autoCompleteTo = async (params: Params2) => {
     const [, { queryTo }] = params.queryKey
-    const res = await fetch(`https://srv.wego.com/places/search?language=en&query=${queryTo}&min_airports=1`, {
+    const options = {
         method: 'GET',
-    })
-        .then(response => response.json())
-        .catch(err => console.error(err))
-    return res
+        url: 'https://srv.wego.com/places/search',
+        params: { language: 'en', query: queryTo, min_airports: '1' }
+    };
+    const res = await axios.request(options)
+    return res.data
 }
