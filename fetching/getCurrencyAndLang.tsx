@@ -1,11 +1,11 @@
+import axios from "axios";
+
 type Params = {
 };
 
 export const getCurrencyAndLang = async (params: Params) => {
-    const res = await fetch(`https://srv.wego.com/places/v1/currencies/latest`, {
-        method: 'GET',
-    })
-        .then(response => response.json())
-        .catch(err => console.error(err))
-    return res
+    const options = { method: 'GET', url: 'https://srv.wego.com/places/v1/currencies/latest' };
+
+    const res = await axios.request(options)
+    return res.data
 }

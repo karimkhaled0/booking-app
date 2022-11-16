@@ -22,7 +22,7 @@ const TopHeader = (props: Props) => {
 
     // Get user data
     const { data, refetch, isError } = useQuery(
-        ["signup"],
+        ["userData"],
         getUserData,
         { staleTime: Infinity }
     );
@@ -52,6 +52,7 @@ const TopHeader = (props: Props) => {
     }
 
     useEffect(() => {
+        // const photoData = 'data:image/jpeg;base64,' + Buffer.from(`${data?.data?.photo?.data}`, 'base64')
         setPhoto(`data:image/png;base64,${data?.data?.photo?.data}`)
     }, [data?.data?.photo?.data, refetch])
     return (
@@ -83,7 +84,7 @@ const TopHeader = (props: Props) => {
                                 data?.data?.photo ? (
                                     <Image
                                         className='rounded-full'
-                                        src={photo ? photo : profileBlank}
+                                        src={photo}
                                         alt='Profile-pic'
                                         width={25}
                                         height={25}

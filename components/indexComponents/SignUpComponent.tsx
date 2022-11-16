@@ -1,9 +1,17 @@
 import React, { useRef, useState } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
+import axios from 'axios'
+import { useQuery } from '@tanstack/react-query'
+import { getIp } from '../../fetching/getIp'
 
 type Props = {}
 
 const SignUpComponent = (props: Props) => {
+    const { data } = useQuery(
+        ["getIp"],
+        getIp,
+        { staleTime: Infinity }
+    );
     const [email, setEmail] = useState('')
     const [emailError, setEmailError] = useState('')
     const [password, setPassword] = useState('')
@@ -15,21 +23,21 @@ const SignUpComponent = (props: Props) => {
 
     const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const res = await fetch(`http://localhost:8000/signup`, {
+        const options = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+            url: 'http://localhost:8000/signup',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            data: {
                 name: email.substring(0, email.indexOf('@')),
                 email: email,
                 password: password,
-                password2: password2
-            })
-        })
-            .then(response => response.json())
-            .catch(err => console.error(err))
-        const error = res.errors
+                password2: password2,
+                address: data.country_name
+            }
+        };
+
+        const res = await axios.request(options)
+        const error = res.data.errors
         console.log(error)
         if (!error) {
             setModal(true)
@@ -50,20 +58,20 @@ const SignUpComponent = (props: Props) => {
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const res = await fetch(`http://localhost:8000/signin`, {
+        const options = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+            url: 'http://localhost:8000/signin',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            data: {
                 email: email,
                 password: password,
-            })
-        })
-            .then(response => response.json())
-            .catch(err => console.error(err))
-        const error = res.errors
-        const token = res.token
+            }
+        };
+
+        const res = await axios.request(options)
+
+        const error = res.data.errors
+        const token = res.data.token
         if (!error) {
             localStorage.setItem('token', token)
             window.location.reload()
@@ -91,7 +99,8 @@ const SignUpComponent = (props: Props) => {
         setModal2(false)
     }
     useOnClickOutside(modal2Outside, handleModal2ClickOutside)
-
+    // const prof = new URL('blob:http://localhost:3000/8eaee323-37d2-4b8c-8fa0-8555649d8d8d')
+    // console.log(prof.toJSON())
     return (
         <div className='relative'>
             <div className='topHeaderClass w-fit'>

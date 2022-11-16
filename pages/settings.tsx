@@ -15,7 +15,7 @@ type Props = {}
 
 const settings = (props: Props) => {
     const { isError } = useQuery(
-        ["signup"],
+        ["userData"],
         getUserData,
         { staleTime: Infinity }
     );

@@ -1,4 +1,4 @@
-import { CameraIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { CameraIcon, CheckCircleIcon, ExclamationCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
 import profileBlank from '../../public/profileBlank.png'
@@ -8,18 +8,101 @@ import axios from 'axios'
 import { useOnClickOutside } from 'usehooks-ts';
 type Props = {}
 
+
 const PersonalDetails = (props: Props) => {
     const { data, refetch, isError } = useQuery(
-        ["signup"],
+        ["userData"],
         getUserData,
         { staleTime: Infinity }
     );
+    // user data
+    const [name, setName] = useState('Let us know what to call you')
+    const [email, setEmail] = useState('Add your email')
+    const [phoneNumber, setPhoneNumber] = useState('Add your phone number')
+    const [birth, setBirth] = useState('Enter your date of birth')
+    const [gendar, setGendar] = useState('Select your gender')
+    const [address, setAddress] = useState('Add your address')
+    // edit user data
+    const [editName, setEditName] = useState(false)
+
+    // updated states
+    const [updatedFirstName, setUpdatedFirstName] = useState('')
+    const [updatedLastName, setUpdatedLastName] = useState('')
+
+    // edit user data errors
+    const [updatedFirstNameError, setUpdatedFirstNameError] = useState(false)
+    const [updatedLastNameError, setUpdatedLastNameError] = useState(false)
+
+    // useEffect to avoid react-hydration-error
+    useEffect(() => {
+        if (data?.data?.name) {
+            setName(data?.data?.name)
+        }
+        if (data?.data?.email) {
+            setEmail(data?.data?.email)
+        }
+        if (data?.data?.phoneNumber) {
+            setPhoneNumber(data?.data?.phoneNumber)
+        }
+        if (data?.data?.birth) {
+            setBirth(data?.data?.birth)
+        }
+        if (data?.data?.gendar) {
+            setGendar(data?.data?.gendar)
+        }
+        if (data?.data?.address) {
+            setAddress(data?.data?.address)
+        }
+
+    }, [data?.data?.address, data?.data?.birth, data?.data?.email, data?.data?.gendar, data?.data?.name, data?.data?.phoneNumber])
+    const handleEditName = () => {
+        setEditName(!editName)
+    }
+
+    // updata the data
+    const updateData = async () => {
+        const options = {
+            method: 'PUT',
+            url: `http://localhost:8000/api/user/${data?.data?._id}`,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'authorization': `Bearer ${localStorage.token}`
+            },
+            data: {
+                name: `${updatedFirstName} ${updatedLastName}`,
+            }
+        };
+        if (!updatedFirstName) {
+            setUpdatedFirstNameError(true)
+        }
+        if (!updatedLastName) {
+            setUpdatedLastNameError(true)
+        } else {
+            const res = await axios.request(options).then(function (response) {
+                setEditName(false)
+                setUpdatedLastName('')
+                setUpdatedLastNameError(false)
+                setUpdatedFirstName('')
+                setUpdatedFirstNameError(false)
+            }).catch(function (error) {
+                return
+            });
+        }
+
+        refetch()
+    }
+
+
+
+
+
+    // Photo upload functions *start*
     // For uploading photo
     const [profilePhoto, setProfilePhoto] = useState<File>(Object)
     // Preview the image when uploading
     const [imagePreview, setImagePreview] = useState(Object)
     // set the image from database
-    const [photo, setPhoto] = useState('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAAAA3NCSVQICAjb4U/gAAAAFVBMVEVDdOCgw/84bd6jxv9kjemXuvyCp/OFEg4oAAABzklEQVRoge2Y63IDIQiFVXTf/5GLdrNtssDBdZ2mE5nM9PKDzwOIkBAnW1iABViABViABXg7AO02B0BUttxsKx0ML4C9h5T4k0L9yYxbARRz9fxjKeXoQ7gAtD153xmbi+AAEGXBPxOyh+AByP6dBAjQzt/MQcAAKf4decAhMvwzYVgBZcu/I0gIUEwBLKGMAZAAXEkIAASwjQFQhHCMAMCq0R0AKtUGwBQEWEdAAQagLAMFWADKsgmg2YD5OXAABnOAyzSMlanjHoxdNNwqUMMebXawX/91u0YS8LsPn0xbAhTwDo++MbZ4BiPP6Dh38NIJt42Och7SfcNvtfIqImXnhuDecBjxWBH4F6/7rhUq8gZV/fMO5Vw++gDHCti3BfZtmY/PLMAV+xjAntrS7PjzJgDVHb+WaDqs1WqJHgp8cOoXCM3na7eo/6s3YuTJZO/13Fq3bhR06wwAX93TsSWE3TdUALs3z/4sQ0doAPKc/jdCC5QGMNZ7BaE8DyKASp/3b4T8wIkAvPqJJhJEwCX3yhAjADxbh0IQxjABcDFA1YQgnQHXBYizvAC4LkCKkRCiEcA5zWfAQApcAJoN+P8hWgqWgqVgKVgKPlLBF94eHX5sghkhAAAAAElFTkSuQmCC')
+    const [photo, setPhoto] = useState('')
     // Prgress
     const [progress, setProgress] = useState(Number)
     // Uploaded successfully
@@ -76,12 +159,15 @@ const PersonalDetails = (props: Props) => {
     }
 
     useEffect(() => {
+        // const photoData = 'data:image/jpeg;base64,' + Buffer.from(`${data?.data?.photo?.data}`, 'base64')
         setPhoto(`data:image/png;base64,${data?.data?.photo?.data}`)
-    }, [data?.data?.photo?.data, profilePhoto, refetch])
+    }, [data?.data?.photo?.data, photo, profilePhoto, refetch])
+    // *end*
+
     return (
         <div className='ml-5'>
             {/* text and photo */}
-            <div className='flex items-center justify-between px-5 py-2'>
+            <div className='flex items-center border-b border-gray-300 justify-between px-5 py-2'>
                 <div className='space-y-2'>
                     <h1 className='text-3xl text-black font-bold'>Personal details</h1>
                     <h1 className='text-sm text-gray-500'>Update your information and find out how it{"'"}s used.</h1>
@@ -92,7 +178,7 @@ const PersonalDetails = (props: Props) => {
                     <div className='w-16 h-16 z-10 relative'>
                         <Image
                             className='rounded-full'
-                            src={data?.data?.photo ? photo : profileBlank}
+                            src={photo === 'data:image/png;base64,undefined' ? profileBlank : photo}
                             alt='profile'
                             layout='fill'
                         />
@@ -120,7 +206,7 @@ const PersonalDetails = (props: Props) => {
                                     <div className='w-28 h-28'>
                                         <Image
                                             className='rounded-full'
-                                            src={data?.data?.photo ? photo : imagePreview.name || profileBlank}
+                                            src={photo === 'data:image/png;base64,undefined' ? imagePreview.name ? imagePreview.name : profileBlank : photo}
                                             alt='profile blank'
                                             width={80}
                                             height={80}
@@ -155,48 +241,102 @@ const PersonalDetails = (props: Props) => {
                 </div>
             </div>
             {/* Name */}
-            <div className='grid grid-cols-3 items-center border-y border-gray-300 my-2 mx-2 h-16 max-h-20'>
-                <h1 className='text-black ml-5 justify-self-start'>Name</h1>
-                <h1 className='text-gray-500'>Let us know what to call you</h1>
-                <h1 className='text-blue-700 font-semibold justify-self-end cursor-pointer p-1 hover:bg-blue-100 rounded-lg'>Edit</h1>
+            <div className={editName ? 'personalDetailDiv my-2 mx-2 h-40' : 'personalDetailDiv my-2 mx-2 h-16 max-h-20'}>
+                <h1 className={editName ? 'text-black ml-5 place-self-start' : 'text-black ml-5 justify-self-start'}>Name</h1>
+                <h1 className={editName ? 'hidden' : 'text-gray-500'}>{name}</h1>
+                <h1 className={editName ? 'hidden' : 'edit'} onClick={handleEditName}>Edit</h1>
+                {/* Edit name */}
+                {
+                    editName && (
+                        <div className='w-full flex items-center justify-between place-self-start'>
+                            <div className='flex items-center space-x-5'>
+                                <div>
+                                    <label htmlFor="first_name" className="block text-base mb-2 font-medium text-gray-900">First name</label>
+                                    <div className='relative'>
+                                        <input
+                                            onChange={(e) => {
+                                                setUpdatedFirstName(e.target.value)
+                                                setUpdatedFirstNameError(false)
+                                            }}
+                                            type="text" value={updatedFirstName} id="first_name" className={updatedFirstNameError ? "nameInputPersonal border-red-500 focus:outline-red-500" : "nameInputPersonal"} required />
+                                        <ExclamationCircleIcon
+                                            className={updatedFirstNameError ? 'h-5 w-5 absolute text-red-500 right-1 top-1/4' : 'hidden'}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label htmlFor="last_name" className="block text-base mb-2 font-medium text-gray-900">Last name</label>
+                                    <div className='relative'>
+                                        <input
+                                            onChange={(e) => {
+                                                setUpdatedLastName(e.target.value)
+                                                setUpdatedLastNameError(false)
+                                            }}
+                                            type="text" value={updatedLastName} id="last_name" className={updatedLastNameError ? "nameInputPersonal border-red-500 focus:outline-red-500" : "nameInputPersonal"} required />
+                                        <ExclamationCircleIcon
+                                            className={updatedLastNameError ? 'h-5 w-5 absolute text-red-500 right-1 top-1/4' : 'hidden'}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+                {
+                    editName && (
+                        <div className='place-self-end flex flex-col py-2 my-auto space-y-16'>
+                            <h1 className='clickButton text-blue-500 hover:underline' onClick={() => {
+                                setEditName(false)
+                                setUpdatedLastName('')
+                                setUpdatedLastNameError(false)
+                                setUpdatedFirstName('')
+                                setUpdatedFirstNameError(false)
+                            }}>Cancel</h1>
+                            <button className='clickButton text-white bg-blue-500 px-3 p-2 rounded-lg' onClick={updateData}>Save</button>
+                        </div>
+                    )
+                }
+
+
             </div>
+            {/* TODO: */}
             {/* Email */}
-            <div className='grid grid-cols-3 items-center border-b border-gray-300 my-2 pb-2 mx-2 h-fit'>
+            <div className='personalDetailDiv my-2 pb-2 mx-2 h-fit'>
                 <h1 className='text-black ml-5 justify-self-start'>Email address</h1>
                 <div className='flex flex-col'>
-                    <h1 className='text-gray-500'>kkmawe@gmail.com</h1>
+                    <h1 className='text-gray-500'>{email}</h1>
                     <h1 className='text-gray-500 w-[500px]'>This is the email address you use to sign in.
-                        It’s also where we send your booking confirmations.</h1>
+                        It{"'"}s also where we send your booking confirmations.</h1>
                 </div>
-                <h1 className='text-blue-700 font-semibold justify-self-end cursor-pointer p-1 hover:bg-blue-100 rounded-lg'>Edit</h1>
+                <h1 className='edit'>Edit</h1>
             </div>
             {/* Phone */}
-            <div className='grid grid-cols-3 items-center border-b border-gray-300 my-2 pb-2 mx-2 h-fit'>
+            <div className='personalDetailDiv my-2 pb-2 mx-2 h-fit'>
                 <h1 className='text-black ml-5 justify-self-start'>Phone number</h1>
                 <div className='flex flex-col'>
-                    <h1 className='text-gray-500'>Add your phone number</h1>
+                    <h1 className='text-gray-500'>{phoneNumber}</h1>
                     <h1 className='text-gray-500 w-[500px]'>Properties or attractions you book can use this number to contact you.
                         You can also use it to sign in.</h1>
                 </div>
-                <h1 className='text-blue-700 font-semibold justify-self-end cursor-pointer p-1 hover:bg-blue-100 rounded-lg'>Edit</h1>
+                <h1 className='edit'>Edit</h1>
             </div>
             {/* Date of Birth */}
-            <div className='grid grid-cols-3 items-center border-b border-gray-300 my-2 mx-2 h-16 max-h-20'>
+            <div className='personalDetailDiv my-2 mx-2 h-16 max-h-20'>
                 <h1 className='text-black ml-5 justify-self-start'>Date of birth</h1>
-                <h1 className='text-gray-500'>Enter your date of birth</h1>
-                <h1 className='text-blue-700 font-semibold justify-self-end cursor-pointer p-1 hover:bg-blue-100 rounded-lg'>Edit</h1>
+                <h1 className='text-gray-500'>{birth}</h1>
+                <h1 className='edit'>Edit</h1>
             </div>
             {/* Gendar */}
-            <div className='grid grid-cols-3 items-center border-b border-gray-300 my-2 mx-2 h-16 max-h-20'>
+            <div className='personalDetailDiv my-2 mx-2 h-16 max-h-20'>
                 <h1 className='text-black ml-5 justify-self-start'>Gendar</h1>
-                <h1 className='text-gray-500'>Select your gender</h1>
-                <h1 className='text-blue-700 font-semibold justify-self-end cursor-pointer p-1 hover:bg-blue-100 rounded-lg'>Edit</h1>
+                <h1 className='text-gray-500'>{gendar}</h1>
+                <h1 className='edit'>Edit</h1>
             </div>
             {/* Address */}
-            <div className='grid grid-cols-3 items-center border-b border-gray-300 my-2 mx-2 h-16 max-h-20'>
+            <div className='personalDetailDiv my-2 mx-2 h-16 max-h-20'>
                 <h1 className='text-black ml-5 justify-self-start'>Address</h1>
-                <h1 className='text-gray-500'>Egypt</h1>
-                <h1 className='text-blue-700 font-semibold justify-self-end cursor-pointer p-1 hover:bg-blue-100 rounded-lg'>Edit</h1>
+                <h1 className='text-gray-500'>{address}</h1>
+                <h1 className='edit'>Edit</h1>
             </div>
         </div>
     )

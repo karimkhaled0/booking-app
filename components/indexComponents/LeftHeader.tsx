@@ -1,6 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 import { Bars3BottomLeftIcon, Bars3BottomRightIcon, BriefcaseIcon, ChevronRightIcon, GlobeEuropeAfricaIcon, HomeIcon, QuestionMarkCircleIcon, UserPlusIcon, WalletIcon } from '@heroicons/react/24/solid'
+import Image from 'next/image'
 import React, { useState } from 'react'
+import sky from '../../public/sky4.png'
+import logo from '../../public/logo.png'
 
 type Props = {
     home: boolean,
@@ -24,7 +26,13 @@ const LeftHeader = ({ home, wallet, booking, business, explore, support, headerO
 
             {
                 open ? null : (
-                    <img src='/sky4.png' alt="s" className='w-full h-auto absolute bottom-20' />
+                    <div className='w-full h-auto absolute bottom-20'>
+                        <Image
+                            src={sky}
+                            alt='sky'
+                            layout='responsive'
+                        />
+                    </div>
                 )
             }
 
@@ -104,7 +112,13 @@ const LeftHeader = ({ home, wallet, booking, business, explore, support, headerO
             {
                 open ? (
                     <div className='justify-around bg-white leftHeaderButton cursor-pointer'>
-                        <img className='w-8 h-8' src="/logo.png" alt="s" />
+                        <div className='w-8 h-8'>
+                            <Image
+                                src={logo}
+                                alt='logo'
+                                layout='responsive'
+                            />
+                        </div>
                         <div>
                             <h1 className='text-black'>Get Premium</h1>
                             <p className='text-xs text-gray-500'>$39/m</p>
@@ -113,7 +127,13 @@ const LeftHeader = ({ home, wallet, booking, business, explore, support, headerO
                     </div>
                 ) : (
                     <div className='bg-white p-1 rounded-full clickButton'>
-                        <img className='w-8 h-8' src="/logo.png" alt="s" />
+                        <div className='w-8 h-8'>
+                            <Image
+                                src={logo}
+                                alt='logo'
+                                layout='responsive'
+                            />
+                        </div>
                     </div>
                 )
             }
