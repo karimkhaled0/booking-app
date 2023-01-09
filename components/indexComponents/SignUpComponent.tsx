@@ -25,7 +25,7 @@ const SignUpComponent = (props: Props) => {
         e.preventDefault()
         const options = {
             method: 'POST',
-            url: 'https://booking-back-wine.vercel.app/signup',
+            url: 'https://test-uy42.onrender.com/signup',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             data: {
                 name: email.substring(0, email.indexOf('@')),
@@ -60,7 +60,7 @@ const SignUpComponent = (props: Props) => {
         e.preventDefault()
         const options = {
             method: 'POST',
-            url: 'https://booking-back-oumak52pt-kkmawe.vercel.app/signin',
+            url: 'https://test-uy42.onrender.com/signin',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             data: {
                 email: email,

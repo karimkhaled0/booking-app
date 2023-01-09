@@ -63,7 +63,7 @@ const PersonalDetails = (props: Props) => {
     const updateData = async () => {
         const options = {
             method: 'PUT',
-            url: `http://localhost:8000/api/user/${data?.data?._id}`,
+            url: `https://test-uy42.onrender.com/api/user/${data?.data?._id}`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'authorization': `Bearer ${localStorage.token}`
@@ -139,7 +139,7 @@ const PersonalDetails = (props: Props) => {
         form.append("photo", profilePhoto);
         const options = {
             method: 'PUT',
-            url: `http://localhost:8000/api/user/upload/${data?.data?._id}`,
+            url: `https://test-uy42.onrender.com/api/user/upload/${data?.data?._id}`,
             headers: {
                 'Content-Type': '',
                 authorization: `Bearer ${localStorage.token}`
