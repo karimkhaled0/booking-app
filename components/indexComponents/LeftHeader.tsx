@@ -2,7 +2,7 @@ import { Bars3BottomLeftIcon, Bars3BottomRightIcon, BriefcaseIcon, ChevronRightI
 import Image from 'next/image'
 import React, { useState } from 'react'
 import sky from '../../public/sky4.png'
-import logo from '../../public/logo.png'
+import logo from '../../public/Logo.png'
 
 type Props = {
     home: boolean,
