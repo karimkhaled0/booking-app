@@ -25,7 +25,7 @@ const SignUpComponent = (props: Props) => {
         e.preventDefault()
         const options = {
             method: 'POST',
-            url: 'https://booking-back-oumak52pt-kkmawe.vercel.app/signup',
+            url: 'https://data.mongodb-api.com/app/data-mkxzz/endpoint/data/v1/signup',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             data: {
                 name: email.substring(0, email.indexOf('@')),
