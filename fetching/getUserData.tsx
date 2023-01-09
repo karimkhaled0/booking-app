@@ -6,7 +6,7 @@ type Params = {
 export const getUserData = async (params: Params) => {
     const options = {
         method: 'GET',
-        url: 'http://localhost:8000/api/user/me',
+        url: 'https://vercel.com/kkmawe/booking-back/HDQGpdvGdiKq5qbmW5TmBF7ivTRv/api/user/me',
         headers: {
             authorization: `Bearer ${localStorage.token}`
         }

@@ -25,7 +25,7 @@ const SignUpComponent = (props: Props) => {
         e.preventDefault()
         const options = {
             method: 'POST',
-            url: 'http://localhost:8000/signup',
+            url: 'https://vercel.com/kkmawe/booking-back/HDQGpdvGdiKq5qbmW5TmBF7ivTRv/signup',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             data: {
                 name: email.substring(0, email.indexOf('@')),
@@ -60,7 +60,7 @@ const SignUpComponent = (props: Props) => {
         e.preventDefault()
         const options = {
             method: 'POST',
-            url: 'http://localhost:8000/signin',
+            url: 'https://vercel.com/kkmawe/booking-back/HDQGpdvGdiKq5qbmW5TmBF7ivTRv/signin',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             data: {
                 email: email,
